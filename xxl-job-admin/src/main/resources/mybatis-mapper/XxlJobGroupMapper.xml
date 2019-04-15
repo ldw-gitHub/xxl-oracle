@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xxl.job.admin.dao.XxlJobGroupDao">
+	
+	<resultMap id="XxlJobGroup" type="com.xxl.job.admin.core.model.XxlJobGroup" >
+		<result column="id" property="id" jdbcType="INTEGER" />
+	    <result column="app_name" property="appName" jdbcType="VARCHAR" />
+	    <result column="title" property="title" jdbcType="VARCHAR" />
+	    <result column="order" property="order" jdbcType="INTEGER" />
+		<result column="address_type" property="addressType" jdbcType="INTEGER" />
+		<result column="address_list" property="addressList" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		t.id,
+		t.app_name,
+		t.title,
+		t."ORDER",
+		t.address_type,
+		t.address_list
+	</sql>
+
+	<select id="findAll" resultMap="XxlJobGroup">
+		SELECT <include refid="Base_Column_List" />
+		FROM SZBDC_TRIGGER_GROUP t
+		ORDER BY t."ORDER" ASC
+	</select>
+
+	<select id="findByAddressType" parameterType="java.lang.Integer" resultMap="XxlJobGroup">
+		SELECT <include refid="Base_Column_List" />
+		FROM SZBDC_TRIGGER_GROUP t
+		WHERE t.address_type = #{addressType,jdbcType=INTEGER}
+		ORDER BY t."ORDER" ASC
+	</select>
+
+	<insert id="save" parameterType="com.xxl.job.admin.core.model.XxlJobGroup">
+	    <selectKey keyProperty="id" resultType="long" order="BEFORE">
+			SELECT S_SZBDC_TRIGGER_GROUP.NEXTVAL FROM DUAL
+		</selectKey>
+		INSERT INTO SZBDC_TRIGGER_GROUP (ID, APP_NAME, TITLE, "ORDER", ADDRESS_TYPE, ADDRESS_LIST)
+		values ( #{id,jdbcType=INTEGER},#{appName,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, #{order,jdbcType=INTEGER}, #{addressType,jdbcType=INTEGER}, #{addressList,jdbcType=VARCHAR})
+	</insert>
+
+	<update id="update" parameterType="com.xxl.job.admin.core.model.XxlJobGroup" >
+		UPDATE SZBDC_TRIGGER_GROUP
+		SET 
+		    app_name = #{appName,jdbcType=VARCHAR},
+			title = #{title,jdbcType=VARCHAR},
+			order = #{order,jdbcType=INTEGER},
+			address_type = #{addressType,jdbcType=INTEGER},
+			address_list = #{addressList,jdbcType=VARCHAR}
+		WHERE id = #{id,jdbcType=INTEGER}
+	</update>
+
+	<delete id="remove" parameterType="java.lang.Long" >
+		DELETE FROM SZBDC_TRIGGER_GROUP
+		WHERE id = #{id,jdbcType=INTEGER}
+	</delete>
+
+	<select id="load" parameterType="java.lang.Long" resultMap="XxlJobGroup">
+		SELECT <include refid="Base_Column_List" />
+		FROM SZBDC_TRIGGER_GROUP t
+		WHERE t.id = #{id,jdbcType=INTEGER}
+	</select>
+
+</mapper>
